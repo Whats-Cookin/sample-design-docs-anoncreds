@@ -22,6 +22,6 @@ This project involves extending the Aries Cloud Agent Python (ACA-Py) to support
 
 ### Important links to the key features, we will be implementing
 
-- (issuing and verifying anoncreds)[./issuing-verifying.md]
+- [issuing and verifying anoncreds](./issuing-verifying.md)
 
-- !(W3C VC Format)[./W3C-VC-Format.md]
+- [W3C VC Format](./W3C-VC-Format.md)
