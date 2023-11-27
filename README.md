@@ -18,4 +18,10 @@ This project involves extending the Aries Cloud Agent Python (ACA-Py) to support
 **Interoperability**
 
 - Coordination with Aries Framework JavaScript to ensure interoperability between the implementations.
-  
+- The ACA-Py will be used primarily for issuing, verifying, and potentially in an organizational wallet context.
+
+### Important links to the key features, we will be implementing
+
+- (issuing and verifying anoncreds)[./issuing-verifying.md]
+
+- !(W3C VC Format)[./W3C-VC-Format.md]
