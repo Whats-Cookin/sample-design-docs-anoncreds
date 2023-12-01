@@ -57,53 +57,57 @@ def anoncreds_credential_to_w3c(cred):
 def anoncreds_credential_from_w3c(cred):
     cred_p = ObjectHandle()
     result = rust_lib.anoncreds_credential_from_w3c(cred, ctypes.byref(cred_p))
-    if result != 0:
+if result!= 0:
         raise Exception(f"Error code: {result}")
     return cred_p.value
 
 ```
 
-In the above sample python code:
+In the above sample Python code:
 
 - rust_lib.anoncreds_credential_to_w3c and rust_lib. and
-- anoncreds_credential_from_w3c are the Rust functions exposed to Python.
+anoncreds_credential_from_w3c are the Rust functions exposed to Python.
   
 - `ObjectHandle` is used to store the reference to the credential object.
-- ctypes.byref(cred_p) is used to pass a pointer to the ObjectHandle.
+ctypes.byref(cred_p) is used to pass a pointer to the ObjectHandle.
   
-The functions return the converted credential's ObjectHandle value if successful, or raise an exception if there's an error.
+The functions return the converted credential's ObjectHandle value if successful or raise an exception if there's an error.
 
-### Will you write helper methods that are even higher-level than these 6 functions? 
+### Will you write helper methods that are even higher-level than these six functions?
 
-Even though we writing higher-level helper methods can help in the following areas:
+Even though we write higher-level helper methods, they can help in the following areas:
 
-- Abstraction Level: If the goal is to provide Python developers with an API that abstracts away the lower-level details and complexities of credential manipulation, then higher-level helper methods would be beneficial. These methods could combine multiple lower-level operations into a single, more user-friendly function.
+Abstraction Level: If the goal is to provide Python developers with an API that abstracts away the lower-level details and complexities of credential manipulation, then higher-level helper methods would be beneficial. These methods could combine multiple lower-level operations into a single, more user-friendly function.
+For example:
+```
+In comparing lower-level and higher-level approaches in a library for handling user authentication, the lower-level approach offers basic functions like `create_user`, `get_user`, `update_password`, and `delete_user`, which map directly to specific database operations and provides fine-grained control but require more understanding of these operations. In contrast, a higher-level abstraction simplifies usage by encapsulating multiple steps into user-friendly functions such as `register_new_user`, `change_user_password`, and `remove_user_account`. These methods handle additional complexities like password hashing and user verification internally, making the library easier to use and reducing the likelihood of errors, albeit at the cost of reduced flexibility compared to the more complex, lower-level methods. This higher-level approach is especially beneficial for developers not familiar with the underlying systems, offering a more streamlined API.
+  ```
 
-- Use Case Specificity: If there are common patterns or use cases in the application of these functions, higher-level methods can be tailored to these patterns, simplifying the development process for users.
+Use Case Specificity: If there are common patterns or use cases in the application of these functions, higher-level methods can be tailored to these patterns, simplifying the development process for users.
 
-- Ease of Use: Higher-level methods can provide a more Pythonic interface, making the framework easier to use for Python developers who might not be familiar with the intricacies of Rust or FFI.
+Ease of Use: Higher-level methods can provide a more Pythonic interface, making the framework easier to use for Python developers who might not be familiar with the intricacies of Rust or FFI.
 
-- Performance Considerations: Higher-level methods could optimize certain operations by reducing the number of FFI calls, which might be beneficial for performance-critical applications.
+Performance Considerations: Higher-level methods could optimize certain operations by reducing the number of FFI calls, which might be beneficial for performance-critical applications.
 
-- Error Handling and Validation: Providing higher-level methods allows for centralized error handling and input validation, potentially leading to more robust and secure code.
+Error Handling and Validation: Providing higher-level methods allows for centralized error handling and input validation, potentially leading to more robust and secure code.
 
-- Maintenance and Extensibility: Higher-level methods could make the framework easier to maintain and extend, especially if the underlying Rust implementation changes over time.
+Maintenance and Extensibility: Higher-level methods could make the framework easier to maintain and extend, especially if the underlying Rust implementation changes over time.
 
-The writing of this higher-level helper methods into the Aca-py depends generally on the intended audience need **[Gov of BC]**, use cases, and design goals of the Python framework, and it's something we will likely write, if required.
+The writing of these higher-level helper methods into the Academia depends generally on the intended audience need **[Gov of BC]**, use cases, and design goals of the Python framework, and it's something we will likely write if required.
 
 ### Do any new admin functions need to be built on the control channel?
 
-Since we'll be adding w3c compatibility to the aries cloudagent, we will likely be adding some functions to support and manage the features being implemented in the Rust framework. 
+Since we'll be adding W3C compatibility to the aries cloudagent, we will likely be adding some functions to support and manage the features being implemented in the Rust framework.
 
-**Here's a brief overview and examples:**
+Here's a brief overview and examples:
 
-- Credential Verification Management: Admin functions could be required for managing and verifying the validity of non-AnonCreds Data Integrity proof signatures. This might include configuring validation parameters or viewing verification logs.
+Credential Verification Management: Admin functions could be required for managing and verifying the validity of non-AnonCreds Data Integrity proof signatures. This might include configuring validation parameters or viewing verification logs.
 
-- Presentation Creation and Verification: Functions to manage the creation and verification of presentations, including those with non-AnonCreds Data Integrity proof signatures, will be crucial. This could involve setting up templates or guidelines for presentation formats and viewing verification results.
+Presentation Creation and Verification: Functions to manage the creation and verification of presentations, including those with non-AnonCreds Data Integrity proof signatures, will be crucial. This could involve setting up templates or guidelines for presentation formats and viewing verification results.
 
-- Format Support Flexibility: With the support for different presentation request formats, such as DIF, admin functions could be needed to configure and manage these formats. This might include the ability to switch between formats or customize the request parameters for each format.
+Format Support Flexibility: With the support for different presentation request formats, such as DIF, admin functions could be needed to configure and manage these formats. This might include the ability to switch between formats or customize the request parameters for each format.
 
-### Compatibility with AFJ: how will you make sure that you are compatible?
+### Compatibility with AFJ: How will you make sure that you are compatible?
 
 In order to achieve compatibility between Aries Cloud Agent Python (ACA-Py) and the Aries Framework JavaScript (AFJ), it will involve several key steps and considerations. The goal is to achieve interoperability between these two implementations of the Aries protocols. Here are some strategies and aspects to focus on:
 
