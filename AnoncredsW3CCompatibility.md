@@ -32,6 +32,11 @@ These Python functions will call the Rust functions through a foreign function i
 1. Import the necessary modules for FFI.
 2. Define the Python functions that call the Rust functions.
 3. Use the Rust library where these functions are defined.
+   The following PR contains the fucntions we would be using FFI on
+   `https://github.com/hyperledger/anoncreds-rs/pull/271`
+   `https://github.com/hyperledger/anoncreds-rs/pull/273`
+   `https://github.com/hyperledger/anoncreds-rs/pull/274`
+   `https://github.com/hyperledger/anoncreds-rs/pull/276`
    
 Since the Rust functions are using `ObjectHandle` and `ErrorCode`, we would need to have equivalent representations in Python. For simplicity, I'll assume `ObjectHandle` is an integer and `ErrorCode` is an integer representing the error status.
 
