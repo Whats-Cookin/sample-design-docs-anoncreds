@@ -2,7 +2,7 @@
 
 This design proposes to extend the Aries Cloud Agent Python (ACA-Py) to support Hyperledger AnonCreds credentials and presentations in the W3C Verifiable Credentials (VC) and Verifiable Presentations (VP) Format.
 
-The aim is to transition from the legacy AnonCreds format specified in [Aries-Legacy-Method](htpps://link.com) to the W3C VC format.
+The aim is to transition from the legacy AnonCreds format specified in [Aries-Legacy-Method]([htpps://link.com](https://hyperledger.github.io/anoncreds-methods-registry/#hyperledger-indy-legacy-anoncreds-method)) to the W3C VC format.
 
 
 ## Overview
