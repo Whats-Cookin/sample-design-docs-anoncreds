@@ -2,37 +2,37 @@
 
 This design proposes to extend the Aries Cloud Agent Python (ACA-Py) to support Hyperledger AnonCreds credentials and presentations in the W3C Verifiable Credentials (VC) and Verifiable Presentations (VP) Format.
 
-The aim is to transition from the legacy AnonCreds format specified in [Aries-Legacy-Method](htpps://link.com) to the W3C VC format.
+The aim is to transition from the legacy AnonCreds format specified in [Aries-Legacy-Method] (htpps://link.com) to the W3C VC format.
 
 
 ## Overview
 
-We aim to wrap the enhancements made on the RUST Framework firstly, the integration of AnonCreds with W3C VC Format in ACA-Py, which includes support for issuing, verifying, and managing W3C VC Format AnonCreds credentials.  
+We aim to wrap up the enhancements made to the RUST Framework, firstly the integration of AnonCreds with W3C VC Format in ACA-Py, which includes support for issuing, verifying, and managing W3C VC Format AnonCreds credentials.
 
-Also, we're emphasizing cryptographic agility and advanced storage capabilities, enabling multiple signature types and ensuring smooth integration with DIDComm Protocol alignments within ACA-Py and making the framework interopeable with the Javascript Framework [Document](https://github.com/hyperledger/aries-framework-javascript).
+Also, we're emphasizing cryptographic agility and advanced storage capabilities, enabling multiple signature types, ensuring smooth integration with DIDComm Protocol alignments within ACA-Py, and making the framework interoperable with the Javascript Framework [AFJ](https://github.com/hyperledger/aries-framework-javascript).
 
 
 ## Caveats (or What's out of scope)
 
-We will only target compatibility with VCDM (Verifiable Credential Data Model) 1.1, because majorly the python framework is going to  be a wrapper on the RUST Implementation, and would support the features being implemented in the RUST frameworks, which includes:
+We will only target compatibility with VCDM (Verifiable Credential Data Model) 1.1 because, primarily, the Python framework is going to be a wrapper on the RUST implementation and would support the features being implemented in the RUST frameworks, which include:
 
-* Credentials: Verify validity of non-AnonCreds Data Integrity proof signatures
+* Credentials: Verify validity of non-Creds Data Integrity proof signatures
 * Presentations: Create presentations using non-AnonCreds Data Integrity proof signature
-* Presentations: Verify validity of presentations including non-AnonCreds Data Integrity proof signatures
-* Presentations: Support different formats (for example DIF) of Presentation Request
+* Presentations: Verify validity of presentations, including non-AnonCreds Data Integrity proof signatures
+* Presentations: Support different formats (for example, DIF) of Presentation Request
 
 This is also because VCDM (Verifiable Credential Data Model) 2.0 implementations are not mature enough for interop yet.
 
 ## Key Questions
 
-### How will these functions be exposed in acapy?
+### How will these functions be exposed in Acapy?
 
-These Python functions will call the Rust functions through a foreign function interface (FFI) such as ctypes or cffi. Here's how we would likely do it:
+These Python functions will call the Rust functions through a foreign function interface (FFI), such as ctypes or cffi. Here's how we would likely do it:
 
 1. Import the necessary modules for FFI.
 2. Define the Python functions that call the Rust functions.
 3. Use the Rust library where these functions are defined.
-   The following PR contains the fucntions we would be using FFI on
+   The following PR contains the functions we would be using FFI on
    `https://github.com/hyperledger/anoncreds-rs/pull/271`
    `https://github.com/hyperledger/anoncreds-rs/pull/273`
    `https://github.com/hyperledger/anoncreds-rs/pull/274`
