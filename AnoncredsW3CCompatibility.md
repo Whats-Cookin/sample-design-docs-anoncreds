@@ -58,7 +58,7 @@ ErrorCode = ctypes.c_int
 def anoncreds_credential_to_w3c(cred):
     cred_p = ObjectHandle()
     result = rust_lib.anoncreds_credential_to_w3c(cred, ctypes.byref(cred_p))
-    if result != 0:
+if result!= 0:
         raise Exception(f"Error code: {result}")
     return cred_p.value
 
@@ -88,10 +88,10 @@ Even though we write higher-level helper methods, they can help in the following
 
 
 Abstraction Level: If the goal is to provide Python developers with an API that abstracts away the lower-level details and complexities of credential manipulation, then higher-level helper methods would be beneficial. These methods could combine multiple lower-level operations into a single, more user-friendly function.
-For example:
-```
-In comparing lower-level and higher-level approaches in a library for handling user authentication, the lower-level approach offers basic functions like `create_user`, `get_user`, `update_password`, and `delete_user`, which map directly to specific database operations and provides fine-grained control but require more understanding of these operations. In contrast, a higher-level abstraction simplifies usage by encapsulating multiple steps into user-friendly functions such as `register_new_user`, `change_user_password`, and `remove_user_account`. These methods handle additional complexities like password hashing and user verification internally, making the library easier to use and reducing the likelihood of errors, albeit at the cost of reduced flexibility compared to the more complex, lower-level methods. This higher-level approach is especially beneficial for developers not familiar with the underlying systems, offering a more streamlined API.
-  ```
+**For example:**
+
+In comparing lower-level and higher-level approaches in a library for handling user authentication, the lower-level approach offers basic functions like `create_user`, `get_user`, `update_password`, and `delete_user`, which map directly to specific database operations and provide fine-grained control but require more understanding of these operations. In contrast, a higher-level abstraction simplifies usage by encapsulating multiple steps into user-friendly functions such as `register_new_user`, `change_user_password`, and `remove_user_account`. These methods handle additional complexities like password hashing and user verification internally, making the library easier to use and reducing the likelihood of errors, albeit at the cost of reduced flexibility compared to the more complex, lower-level methods. This higher-level approach is especially beneficial for developers not familiar with the underlying systems, offering a more streamlined API.
+
 
 ### Compatibility with AFJ: How will you make sure that you are compatible?
 
