@@ -1,15 +1,16 @@
 # Anoncreds W3C Compatibility
 
 This design proposes to extend the Aries Cloud Agent Python (ACA-Py) to support Hyperledger AnonCreds credentials and presentations in the W3C Verifiable Credentials (VC) and Verifiable Presentations (VP) Format.
+The aim is to transition from the legacy AnonCreds format specified in [Aries-Legacy-Method](https://hyperledger.github.io/anoncreds-methods-registry/#hyperledger-indy-legacy-anoncreds-method) to the W3C VC format.
 
-The aim is to transition from the legacy AnonCreds format specified in [Aries-Legacy-Method] (htpps://link.com) to the W3C VC format.
 
 
 ## Overview
 
-We aim to wrap up the enhancements made to the RUST Framework, firstly the integration of AnonCreds with W3C VC Format in ACA-Py, which includes support for issuing, verifying, and managing W3C VC Format AnonCreds credentials.
+We aim to wrap the enhancements made on the RUST Framework [Anoncreds Rust](https://github.com/hyperledger/anoncreds-rs) first, the integration of AnonCreds with W3C VC Format in ACA-Py, which includes support for issuing, verifying, and managing W3C VC Format AnonCreds credentials.
 
-Also, we're emphasizing cryptographic agility and advanced storage capabilities, enabling multiple signature types, ensuring smooth integration with DIDComm Protocol alignments within ACA-Py, and making the framework interoperable with the Javascript Framework [AFJ](https://github.com/hyperledger/aries-framework-javascript).
+Also, we're emphasizing cryptographic agility and advanced storage capabilities, enabling multiple signature types, ensuring smooth integration with DIDComm Protocol alignments within ACA-Py, and making the framework interoperable with the Javascript Framework [Document](https://github.com/hyperledger/aries-framework-javascript).
+
 
 
 ## Caveats (or What's out of scope)
@@ -39,6 +40,9 @@ These Python functions will call the Rust functions through a foreign function i
    `https://github.com/hyperledger/anoncreds-rs/pull/276`
    
 Since the Rust functions are using `ObjectHandle` and `ErrorCode`, we would need to have equivalent representations in Python. For simplicity, I'll assume `ObjectHandle` is an integer and `ErrorCode` is an integer representing the error status.
+
+### Will you write helper methods that are even higher-level than these six functions?
+
 
 ```py
 import ctypes
@@ -82,11 +86,14 @@ The functions return the converted credential's ObjectHandle value if successful
 
 Even though we write higher-level helper methods, they can help in the following areas:
 
+
 Abstraction Level: If the goal is to provide Python developers with an API that abstracts away the lower-level details and complexities of credential manipulation, then higher-level helper methods would be beneficial. These methods could combine multiple lower-level operations into a single, more user-friendly function.
 For example:
 ```
 In comparing lower-level and higher-level approaches in a library for handling user authentication, the lower-level approach offers basic functions like `create_user`, `get_user`, `update_password`, and `delete_user`, which map directly to specific database operations and provides fine-grained control but require more understanding of these operations. In contrast, a higher-level abstraction simplifies usage by encapsulating multiple steps into user-friendly functions such as `register_new_user`, `change_user_password`, and `remove_user_account`. These methods handle additional complexities like password hashing and user verification internally, making the library easier to use and reducing the likelihood of errors, albeit at the cost of reduced flexibility compared to the more complex, lower-level methods. This higher-level approach is especially beneficial for developers not familiar with the underlying systems, offering a more streamlined API.
   ```
+
+### Compatibility with AFJ: How will you make sure that you are compatible?
 
 Use Case Specificity: If there are common patterns or use cases in the application of these functions, higher-level methods can be tailored to these patterns, simplifying the development process for users.
 
