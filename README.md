@@ -1,1 +1,0 @@
-# sample-design-docs-anoncreds
