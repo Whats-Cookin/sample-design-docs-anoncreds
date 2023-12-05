@@ -36,3 +36,4 @@ Questions
 Are we still implementing the same abstract method
 [abstract method for create credential](https://github.com/hyperledger/aries-cloudagent-python/blob/cd4f1dc8fddc1194e0abc00ef4fb3d671745ad51/aries_cloudagent/indy/issuer.py#L113)
 
+how exactly is [create_credential](https://github.com/hyperledger/aries-cloudagent-python/blob/cd4f1dc8fddc1194e0abc00ef4fb3d671745ad51/aries_cloudagent/indy/issuer.py#L114) in aca-py tied to the wrapper function [create_credential](https://github.com/hyperledger/anoncreds-rs/blob/main/wrappers/python/anoncreds/bindings.py#L631C5-L631C22)
