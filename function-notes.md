@@ -1,6 +1,13 @@
 # Functions and Pointers
 
-existing functions:
+### python wrapper 
+
+https://github.com/hyperledger/anoncreds-rs/blob/main/wrappers/python/demo/test.py
+
+see new functions being put into the python wrapper:
+[create_w3c_credential_offer](https://github.com/hyperledger/anoncreds-rs/pull/273/files#diff-f700874ced6aa62466f7a24eb730cd568dcdfa6f6f98322ea1e802dbc8fe91a8R712)
+
+### existing functions:
 
 [create_credential](https://github.com/hyperledger/aries-cloudagent-python/blob/cd4f1dc8fddc1194e0abc00ef4fb3d671745ad51/aries_cloudagent/anoncreds/issuer.py#L546)
 
@@ -10,7 +17,7 @@ existing functions:
 `create_offer`,
 `create_request`
 
-new functions:
+### new functions:
 
 anoncreds_create_w3c_credential
 anoncreds_process_w3c_credential
