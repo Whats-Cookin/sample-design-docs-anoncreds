@@ -7,7 +7,12 @@ https://github.com/hyperledger/anoncreds-rs/blob/main/wrappers/python/demo/test.
 see new functions being put into the python wrapper:
 [create_w3c_credential_offer](https://github.com/hyperledger/anoncreds-rs/pull/273/files#diff-f700874ced6aa62466f7a24eb730cd568dcdfa6f6f98322ea1e802dbc8fe91a8R712)
 
-### existing functions:
+### Indy SDK level
+
+[create_credential](https://github.com/hyperledger/aries-cloudagent-python/blob/cd4f1dc8fddc1194e0abc00ef4fb3d671745ad51/aries_cloudagent/indy/sdk/issuer.py#L153)
+...
+
+### existing functions (anoncreds level):
 
 [create_credential](https://github.com/hyperledger/aries-cloudagent-python/blob/cd4f1dc8fddc1194e0abc00ef4fb3d671745ad51/aries_cloudagent/anoncreds/issuer.py#L546)
 
