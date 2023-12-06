@@ -1,232 +1,225 @@
 # Anoncreds W3C Compatibility
 
-This design proposes to extend the Aries Cloud Agent Python (ACA-Py) to support Hyperledger AnonCreds credentials and presentations in the W3C Verifiable Credentials (VC) and Verifiable Presentations (VP) Format.
-The aim is to transition from the legacy AnonCreds format specified in [Aries-Legacy-Method](https://hyperledger.github.io/anoncreds-methods-registry/#hyperledger-indy-legacy-anoncreds-method) to the W3C VC format.
-
-
+This design proposes to extend the Aries Cloud Agent Python (ACA-Py) to support Hyperledger AnonCreds credentials and presentations in the W3C Verifiable Credentials (VC) and Verifiable Presentations (VP) Format. The aim is to transition from the legacy AnonCreds format specified in Aries-Legacy-Method to the W3C VC format.
+<br><br>
 
 ## Overview
 
-We aim to wrap the enhancements made on the RUST Framework [Anoncreds Rust](https://github.com/hyperledger/anoncreds-rs) first, the integration of AnonCreds with W3C VC Format in ACA-Py, which includes support for issuing, verifying, and managing W3C VC Format AnonCreds credentials.
+We aim to wrap the enhancements made on the RUST Framework Anoncreds Rust first, the integration of AnonCreds with W3C VC Format in ACA-Py, which includes support for issuing, verifying, and managing W3C VC Format AnonCreds credentials.
 
-Ideally the signatures will be in parallel with the Javascript Framework [Document](https://github.com/hyperledger/aries-framework-javascript).
+Ideally the signatures will be in parallel with the Javascript Framework Document.
+<br><br>
 
-## Caveats (or What's out of scope)
+## Caveats
 
-We will only target compatibility with VCDM (Verifiable Credential Data Model) 1.1 because, primarily, the Python framework is going to be a wrapper on the RUST implementation and would support the features being implemented in the RUST frameworks, which include:
+For now, we will only target compatibility with VCDM (Verifiable Credential Data Model) 1.1 because the Rust framework we are deriving from is also working with it and would support the features being implemented in the RUST frameworks, which include:
 
-* Credentials: Verify validity of non-Creds Data Integrity proof signatures
-* Presentations: Create presentations using non-AnonCreds Data Integrity proof signature
-* Presentations: Verify validity of presentations, including non-AnonCreds Data Integrity proof signatures
-* Presentations: Support different formats (for example, DIF) of Presentation Request
+- Credentials: Verify validity of non-Creds Data Integrity proof signatures
+- Presentations: Create presentations using non-AnonCreds Data Integrity proof signature
+- Presentations: Verify validity of presentations, including non-AnonCreds Data Integrity proof signatures
+- Presentations: Support different formats (for example, DIF) of Presentation Request
 
 This is also because VCDM (Verifiable Credential Data Model) 2.0 implementations are not mature enough for interop yet.
+<br><br>
 
 ## Key Questions
 
-### How will these functions be exposed in Acapy?
+### What are the functions we are going to wrap?
 
-Currently the Indy SDK create_credential function calls the anoncreds version.
+After thoroughly reviewing this [PR](https://github.com/hyperledger/anoncreds-rs/pull/273) from DSR Coporation, the classes or `AnoncredsObject` that we deemed necessary to be exported are:<br>
 
-Will we create a create_w3c_credential function at the level of Indy SDK or only add an option or flag?
+[W3CCredentialOffer](https://github.com/hyperledger/anoncreds-rs/pull/273/files#diff-6f8cbd34bbd373240b6af81f159177023c05b074b63c7757fc6b3796a66ee240R106)<br>
+class methods (`create`, `load`)<br>
+bindings functions (`create_w3c_credential_offer`)<br>
 
+[W3CCredentialRequest](https://github.com/hyperledger/anoncreds-rs/pull/273/files#diff-6f8cbd34bbd373240b6af81f159177023c05b074b63c7757fc6b3796a66ee240R162)<br>
+class methods (`create`, `load`)<br>
+bindings functions (`create_w3c_credential_request`)<br>
 
-### Will you write helper methods that are even higher-level than these six functions?
+[W3CCredential](https://github.com/hyperledger/anoncreds-rs/pull/273/files#diff-6f8cbd34bbd373240b6af81f159177023c05b074b63c7757fc6b3796a66ee240R424)<br>
+class methods (`create`, `load`)<br>
+instance methods (`proceess`, `to_legacy`, `add_non_anoncreds_integrity_proof`, `set_id`, `set_subject_id`, `add_context`, `add_type`)<br>
+class properties (`schema_id`, `cred_def_id`, `rev_reg_id`, `rev_reg_index`)<br>
+bindings functions (`create_w3c_credential`, `process_w3c_credential`, `_object_from_json`, `_object_get_attribute`, `w3c_credential_add_non_anoncreds_integrity_proof`, `w3c_credential_set_id`, `w3c_credential_set_subject_id`, `w3c_credential_add_context`, `w3c_credential_add_type`)<br>
 
+[W3CPresentation](https://github.com/hyperledger/anoncreds-rs/pull/273/files#diff-6f8cbd34bbd373240b6af81f159177023c05b074b63c7757fc6b3796a66ee240R791)<br>
+class methods (`create`, `load`)<br>
+instance methods (`verify`)<br>
+bindings functions (`create_w3c_presentation`, `_object_from_json`, `verify_w3c_presentation`)<br>
 
-```py
-import ctypes
+They will be added to [\_\_init\_\_.py](https://github.com/hyperledger/anoncreds-rs/blob/main/wrappers/python/anoncreds/__init__.py) as additional exports of AnoncredsObject. <br><br>
 
-# Assuming the Rust library is compiled to a shared library named 'rust_lib.so'
-rust_lib = ctypes.CDLL('./rust_lib.so')
+We also have to consider which classes or anoncreds objects have been modified
 
-# Define the ObjectHandle and ErrorCode types in Python
-ObjectHandle = ctypes.c_int
-ErrorCode = ctypes.c_int
+The classes modified according to the same [PR](https://github.com/hyperledger/anoncreds-rs/pull/273) mentioned above are:<br>
 
-# Here's the Python wrapper for `anoncreds_credential_to_w3c`
-def anoncreds_credential_to_w3c(cred):
-    cred_p = ObjectHandle()
-    result = rust_lib.anoncreds_credential_to_w3c(cred, ctypes.byref(cred_p))
-    if result != 0:
-        raise Exception(f"Error code: {result}")
-    return cred_p.value
+[Credential](https://github.com/hyperledger/anoncreds-rs/pull/273/files#diff-6f8cbd34bbd373240b6af81f159177023c05b074b63c7757fc6b3796a66ee240R402)<br>
+added class methods (`from_w3c`)<br>
+added instance methods (`to_w3c`)<br>
+added bindings functions (`credential_from_w3c`, `credential_to_w3c`)<br>
 
-# Here's the Python wrapper for `anoncreds_credential_from_w3c`
-def anoncreds_credential_from_w3c(cred):
-    cred_p = ObjectHandle()
-    result = rust_lib.anoncreds_credential_from_w3c(cred, ctypes.byref(cred_p))
-if result!= 0:
-        raise Exception(f"Error code: {result}")
-    return cred_p.value
+[PresentCredential](https://github.com/hyperledger/anoncreds-rs/pull/273/files#diff-6f8cbd34bbd373240b6af81f159177023c05b074b63c7757fc6b3796a66ee240R603)<br>
+modified instance methods (`_get_entry`, `add_attributes`, `add_predicates`)<br>
+<br>
+
+### How will they fit into aca-py?
+
+There are two scenarios to consider when we want to add w3c format support.
+
+- Creating a W3C VC credential from credential definition, and issuing and presenting it as is
+- Converting an already issued legacy anoncreds to W3C format(vice versa) so the converted credential can be issued of presented.
+
+#### Creating a W3C VC credential from credential definition, and issuing and presenting it as is
+
+The issuance, presentation and verification of legacy anoncreds are implemented in this [./aries_cloudagent/anoncreds](https://github.com/hyperledger/aries-cloudagent-python/tree/main/aries_cloudagent/anoncreds) directory. Therefore, we will also start from there.<br>
+
+Let us navigate these implementation examples through the respective processes of the concerning agents - **Issuer** and **Holder** as described in https://github.com/hyperledger/anoncreds-rs/blob/main/README.md.
+
+Looking at the [issuer.py](https://github.com/hyperledger/aries-cloudagent-python/blob/main/aries_cloudagent/anoncreds/issuer.py) file and this code block:
 
 ```
+async def create_credential_offer(self, credential_definition_id: str) -> str:
+...
+...
+  credential_offer = CredentialOffer.create(
+                  schema_id or cred_def.schema_id,
+                  credential_definition_id,
+                  key_proof.raw_value,
+              )
+...
+```
 
-In the above sample Python code:
+we can implement the same thing in w3c VC format to send a w3c credential offer like so:
 
-- rust_lib.anoncreds_credential_to_w3c and rust_lib. and
-anoncreds_credential_from_w3c are the Rust functions exposed to Python.
-  
-- `ObjectHandle` is used to store the reference to the credential object.
-ctypes.byref(cred_p) is used to pass a pointer to the ObjectHandle.
-  
-The functions return the converted credential's ObjectHandle value if successful or raise an exception if there's an error.
+- W3C Credential Offer
 
-### Will you write helper methods that are even higher-level than these six functions?
+```
+async def create_w3c_credential_offer(self, credential_definition_id: str) -> str:
+...
+...
+  w3c_credential_offer = W3CCredentialOffer.create(...)
+...
+```
 
+provided `W3CCredentialOffer` is already imported from `anoncreds` module.<br>
 
+In a similar manner, we will proceed through the following processes in comparison with the legacy anoncreds implementations while watching out for signature differences between the two.<br>
 
+- W3C Credential Create
 
-### Compatibility with AFJ: How will you make sure that you are compatible?
+**NOTE: There has been some changes to _encoding of attribute values_ for creating a credential, so we have to be adjust to the new changes.**
 
-Use Case Specificity: If there are common patterns or use cases in the application of these functions, higher-level methods can be tailored to these patterns, simplifying the development process for users.
+```
+async def create_credential(
+        self,
+        credential_offer: dict,
+        credential_request: dict,
+        credential_values: dict,
+    ) -> str:
+...
+...
+  try:
+    credential = await asyncio.get_event_loop().run_in_executor(
+        None,
+        lambda: W3CCredential.create(
+            cred_def.raw_value,
+            cred_def_private.raw_value,
+            credential_offer,
+            credential_request,
+            raw_values,
+            None,
+            None,
+            None,
+            None,
+        ),
+    )
+...
+```
 
-Ease of Use: Higher-level methods can provide a more Pythonic interface, making the framework easier to use for Python developers who might not be familiar with the intricacies of Rust or FFI.
+- W3C Credential Request
 
-Performance Considerations: Higher-level methods could optimize certain operations by reducing the number of FFI calls, which might be beneficial for performance-critical applications.
+```
+async def create_w3c_credential_request(
+        self, credential_offer: dict, credential_definition: CredDef, holder_did: str
+    ) -> Tuple[str, str]:
+...
+...
+try:
+  secret = await self.get_master_secret()
+  (
+      cred_req,
+      cred_req_metadata,
+  ) = await asyncio.get_event_loop().run_in_executor(
+      None,
+      W3CCredentialRequest.create,
+      None,
+      holder_did,
+      credential_definition.to_native(),
+      secret,
+      AnonCredsHolder.MASTER_SECRET_ID,
+      credential_offer,
+  )
+...
+```
 
-Error Handling and Validation: Providing higher-level methods allows for centralized error handling and input validation, potentially leading to more robust and secure code.
+- W3C Credential Present
 
-Maintenance and Extensibility: Higher-level methods could make the framework easier to maintain and extend, especially if the underlying Rust implementation changes over time.
+```
+async def create_w3c_presentation(
+        self,
+        presentation_request: dict,
+        requested_credentials: dict,
+        schemas: Dict[str, AnonCredsSchema],
+        credential_definitions: Dict[str, CredDef],
+        rev_states: dict = None,
+    ) -> str:
+...
+...
+  try:
+    secret = await self.get_master_secret()
+    presentation = await asyncio.get_event_loop().run_in_executor(
+        None,
+        Presentation.create,
+        presentation_request,
+        present_creds,
+        self_attest,
+        secret,
+        {
+            schema_id: schema.to_native()
+            for schema_id, schema in schemas.items()
+        },
+        {
+            cred_def_id: cred_def.to_native()
+            for cred_def_id, cred_def in credential_definitions.items()
+        },
+    )
+...
+```
 
-The writing of these higher-level helper methods into the Academia depends generally on the intended audience need **[Gov of BC]**, use cases, and design goals of the Python framework, and it's something we will likely write if required.
+#### Converting an already issued legacy anoncreds to W3C format(vice versa)
+
+In this case, we can use `to_w3c` method of `Credential` class to convert from legacy to w3c and `to_legacy` method of `W3CCredential` class to convert from w3c to legacy.<br>
+
+We could call `to_w3c` method like this:
+
+```
+w3c_cred = Credential.to_w3c(cred_def)
+```
+
+and for `to_legacy`:
+
+```
+legacy_cred = W3CCredential.to_legacy()
+```
+
+We don't need to input any parameters to it as it in turn calls `Credential.from_w3c()` method under the hood
 
 ### Do any new admin functions need to be built on the control channel?
 
-Since we'll be adding W3C compatibility to the aries cloudagent, we will likely be adding some functions to support and manage the features being implemented in the Rust framework.
+### Compatibility with AFJ: how can we make sure that we are compatible?
 
-Here's a brief overview and examples:
+### What is the roadmap for delivery? What will we build first, then second?
 
-Credential Verification Management: Admin functions could be required for managing and verifying the validity of non-AnonCreds Data Integrity proof signatures. This might include configuring validation parameters or viewing verification logs.
+### Will we introduce new dependencies, and what is risky or easy?
 
-Presentation Creation and Verification: Functions to manage the creation and verification of presentations, including those with non-AnonCreds Data Integrity proof signatures, will be crucial. This could involve setting up templates or guidelines for presentation formats and viewing verification results.
-
-Format Support Flexibility: With the support for different presentation request formats, such as DIF, admin functions could be needed to configure and manage these formats. This might include the ability to switch between formats or customize the request parameters for each format.
-
-### Compatibility with AFJ: How will you make sure that you are compatible?
-
-In order to achieve compatibility between Aries Cloud Agent Python (ACA-Py) and the Aries Framework JavaScript (AFJ), it will involve several key steps and considerations. The goal is to achieve interoperability between these two implementations of the Aries protocols. Here are some strategies and aspects to focus on:
-
-**Follow Aries RFCs**: We have to ensure Both ACA-Py and AFJ adhere strictly to the Aries RFCs (Request for Comments). These RFCs define protocols, data models (W3c DM), and interfaces for various Aries features. Consistent implementation of these RFCs is crucial for interoperability.
-
-**Test Suites and Interoperability Testing**: We'll Implement comprehensive test suites that cover all aspects of the Aries protocols. Regular interoperability testing between ACA-Py and AFJ can help identify and resolve compatibility issues. 
-   
-**DIDComm Protocol Compatibility**: Ensure that both ACA-Py and AFJ are compatible with the same versions of the DIDComm protocol, as this protocol is central to agent communication in Aries.
-
-**Coordinate with the Hyperledger Aries Community**: Engage with the wider Hyperledger Aries community for insights, guidelines, and best practices. This can help in staying aligned with the latest developments and standards.
-
-**Use Common Libraries Where Possible**: For functionalities like cryptographic operations, we'll consider using common libraries or defining standards that both ACA-Py and AFJ can implement. This helps in maintaining consistency in key operations.
-
-**Documentation and Examples**:We would provide clear documentation and examples showing how to achieve interoperability. This can include sample configurations and detailed guidance on setting up ACA-Py locally and also on production.
-
-**Feature Parity and Extensions**: We'll strive for feature parity between ACA-Py and AFJ. Where there are extensions or unique features in one implementation, we'll reach out to the AFJ Team to consider how they can be supported or handled in the it.
-
-**Community Feedback and Collaboration**: Actively seek feedback from developers and users who work with both ACA-Py and AFJ. Collaborative development and issue resolution can significantly enhance compatibility.
-
-We can majorly achieve this interoperability, by making sure we're implementing based on requirements specified, and updating the Javascript team on new features implemented, we can achieve compatibility between the two frameworks.
-
-### Examples
-
-#### Example of an AnonCreds W3C credential:
-
-```json
-{
-  "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    "https://raw.githubusercontent.com/DSRCorporation/anoncreds-rs/design/w3c-support/docs/design/w3c/context.json"
-  ],
-  "type": [
-    "VerifiableCredential",
-    "AnonCredsCredential"
-  ],
-  "issuer": "did:sov:3avoBCqDMFHFaKUHug9s8W",
-  "issuanceDate": "2023-10-26T01:17:32Z",
-  "credentialSchema": {
-    "type": "AnonCredsDefinition",
-    "definition": "did:sov:3avoBCqDMFHFaKUHug9s8W:3:CL:13:default",
-    "schema": "did:sov:3avoBCqDMFHFaKUHug9s8W:2:basic_person:0.1.0",
-    "encoding": "auto"
-  },
-  "credentialSubject": {
-    "firstName": "Alice",
-    "lastName": "Jones",
-    "age": "18"
-  },
-  "proof": [
-    {
-      "type": "CLSignature2023",
-      "signature": "AAAgf9w5.....8Z_x3FqdwRHoWruiF0FlM"
-    },
-    {
-      "type": "Ed25519Signature2020",
-      "created": "2021-11-13T18:19:39Z",
-      "verificationMethod": "did:sov:3avoBCqDMFHFaKUHug9s8W#key-1",
-      "proofPurpose": "assertionMethod",
-      "proofValue": "z58DAdFfa9SkqZMVPxAQpic7ndSayn1PzZs6ZjWp1CktyGesjuTSwRdoWhAfGFCF5bppETSTojQCrfFPP2oumHKtz"
-    }
-  ]
-}
-```
-
-#### Example of an AnonCreds W3C presentation [RUST EXAMPLE]:
-
-```json
-{
-  "@context":[
-    "https://www.w3.org/2018/credentials/v1",
-    "https://raw.githubusercontent.com/DSRCorporation/anoncreds-spec/w3c-credentials/data/anoncreds-w3c-context.json"
-  ],
-  "type":[
-    "VerifiablePresentation",
-    "AnonCredsPresentation"
-  ],
-  "verifiableCredential":[
-    {
-      "@context":[
-        "https://www.w3.org/2018/credentials/v1",
-        "https://raw.githubusercontent.com/DSRCorporation/anoncreds-spec/w3c-credentials/data/anoncreds-w3c-context.json"
-      ],
-      "type":[
-        "VerifiableCredential",
-        "AnonCredsCredential"
-      ],
-      "credentialSchema": {
-        "type": "AnonCredsDefinition",
-        "definition": "did:sov:3avoBCqDMFHFaKUHug9s8W:3:CL:13:default",
-        "schema": "did:sov:3avoBCqDMFHFaKUHug9s8W:2:basic_person:0.1.0",
-        "encoding": "auto"
-      },
-      "credentialSubject":{
-        "firstName":"Alice",
-        "age":{
-          "type":"AnonCredsPredicate",
-          "p_type":">=",
-          "p_value":18
-        }
-      },
-      "issuanceDate":"2023-11-15T10:59:48.036203Z",
-      "issuer":"issuer:id/path=bar",
-      "proof":{
-        "type":"AnonCredsPresentationProof2023",
-        "mapping":{
-          "predicates":["predicate1_referent"],
-          "revealedAttributeGroups":[],
-          "revealedAttributes":["attr1_referent"],
-          "unrevealedAttributes":[]
-        },
-        "proofValue":"eyJzdWJfcHJvb2Yi...zMTc1NzU0NDAzNDQ0ODUifX1dfX19"
-      }
-    }
-  ],
-  "proof":{
-    "type":"AnonCredsPresentationProof2023",
-    "challenge":"413296376279822794586260",
-    "proofValue":"eyJhZ2dyZWdhdGVkIjp7ImNfaGFzaCI6IjEwMT...IsMzAsMTM1LDE4MywxMDcsMTYwXV19fQ=="
-  }
-}
-```
-
-
-## Diagram representation 
-
-![w3c diagram](./w3c-diagram.png)
+**TBD**
