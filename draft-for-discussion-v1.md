@@ -22,6 +22,13 @@ For now, we will only target compatibility with VCDM (Verifiable Credential Data
 This is also because VCDM (Verifiable Credential Data Model) 2.0 implementations are not mature enough for interop yet.
 <br><br>
 
+## Issues to consider
+
+- If and how the W3C VC Format attachments for the Issue Credential V2.0 and Present Proof V2 Aries DIDComm Protocols should be used when using AnonCreds W3C VC Format credentials.
+- How AnonCreds W3C VC Format verifiable credentials are stored by the holder such that they will be discoverable when needed for creating verifiable presentations.
+- How and when multiple signatures can/should be added to a W3C VC Format credential, enabling both AnonCreds and non-AnonCreds signatures on a single credential and their use in presentations.
+  <br><br>
+
 ## Key Questions
 
 ### What are the functions we are going to wrap?
@@ -213,6 +220,8 @@ legacy_cred = W3CCredential.to_legacy()
 ```
 
 We don't need to input any parameters to it as it in turn calls `Credential.from_w3c()` method under the hood
+
+### How to handle multiple signatures on a W3C VC Format credential?
 
 ### Do any new admin functions need to be built on the control channel?
 
