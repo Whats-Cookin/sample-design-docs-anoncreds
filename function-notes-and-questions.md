@@ -36,6 +36,12 @@ anoncreds_verify_w3c_presentation
 
 see [Demo Scripts](https://github.com/hyperledger/anoncreds-rs/pull/266/files#diff-f0f0c92035decc44061ca415febaa763d3b4b86afc79572ba83f4d76d2a0f617R523)
 
+## Notes (prev questions now answered)
+
+how exactly is [create_credential](https://github.com/hyperledger/aries-cloudagent-python/blob/cd4f1dc8fddc1194e0abc00ef4fb3d671745ad51/aries_cloudagent/indy/issuer.py#L114) in aca-py tied to the wrapper function [create_credential](https://github.com/hyperledger/anoncreds-rs/blob/main/wrappers/python/anoncreds/bindings.py#L631C5-L631C22) - is this by some magic in the Dockerfile ?
+
+pipy import of anoncreds - in the .toml file
+
 ## Questions
 
 ---
@@ -45,9 +51,6 @@ Are we still implementing the same abstract method
 
 ---
 
-how exactly is [create_credential](https://github.com/hyperledger/aries-cloudagent-python/blob/cd4f1dc8fddc1194e0abc00ef4fb3d671745ad51/aries_cloudagent/indy/issuer.py#L114) in aca-py tied to the wrapper function [create_credential](https://github.com/hyperledger/anoncreds-rs/blob/main/wrappers/python/anoncreds/bindings.py#L631C5-L631C22) - is this by some magic in the Dockerfile ?
-
----
 
 The function signatures have changed -
 
@@ -81,7 +84,7 @@ def create_w3c_credential(
 
 how does that impact our implementation, does this mean we need totally separate indy sdk functions to wrap each of these, it should not be a single one?
 
-at what level can we make them unified if at all? or we just provide different top level functions?
+at what level can we make them unified if at all? or we just provide different top level functions?  Can we have a FlexCreds creator that allows request for multiple signatures?
 
 What is the highest level where these get called? where does the user of the SDK interact with them?
 
