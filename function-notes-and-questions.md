@@ -84,3 +84,7 @@ how does that impact our implementation, does this mean we need totally separate
 at what level can we make them unified if at all? or we just provide different top level functions?
 
 What is the highest level where these get called? where does the user of the SDK interact with them?
+
+when is a credential actually issued? i couldn't find a function that explicitly does that in anondreds-rs, only the creation of credential. according to this [part](https://github.com/DSRCorporation/anoncreds-rs/blob/17bd63d8eb032232f418111dd9b0ae7751062aae/src/services/issuer.rs#L755), does it mean that if the `status` is `issuance_by_default`, will it issue a credential immediately after creating it?
+
+this is the [python handler function](https://github.com/hyperledger/aries-cloudagent-python/blob/c677185d3a3a36b498109236131684c322d75f5a/aries_cloudagent/protocols/issue_credential/v1_0/routes.py#L546) for issuing a credential manually _when the issuer and holder are not both configured for automatic responses_
