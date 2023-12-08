@@ -5,27 +5,27 @@ This design proposes to extend the Aries Cloud Agent Python (ACA-Py) to support 
 
 ## Overview
 
-We aim to wrap the enhancements made on the RUST Framework Anoncreds Rust first, the integration of AnonCreds with W3C VC Format in ACA-Py, which includes support for issuing, verifying, and managing W3C VC Format AnonCreds credentials.
+We aim to wrap the enhancements made on the Rust Framework for Anoncreds first. Then we will work on the integration of AnonCreds with W3C VC Format in ACA-Py, which includes support for issuing, verifying, and managing W3C VC Format AnonCreds credentials.
 
-Ideally the signatures will be in parallel with the Javascript Framework Document.
+Ideally the signatures will be delivered in parallel with the Javascript Framework Document.
 <br><br>
 
 ## Caveats
 
-For now, we will only target compatibility with VCDM (Verifiable Credential Data Model) 1.1 because the Rust framework we are deriving from is also working with it and would support the features being implemented in the RUST frameworks, which include:
+For now, we will only target compatibility with [VCDM (Verifiable Credential Data Model) 1.1](https://www.w3.org/TR/vc-data-model/) because the Rust framework we are deriving from is also working with that target. This means we would support the features being implemented in Rust, which include:
 
-- Credentials: Verify validity of non-Creds Data Integrity proof signatures
+- Credentials: Verify validity of non-AnonCreds Data Integrity proof signatures
 - Presentations: Create presentations using non-AnonCreds Data Integrity proof signature
 - Presentations: Verify validity of presentations, including non-AnonCreds Data Integrity proof signatures
 - Presentations: Support different formats (for example, DIF) of Presentation Request
 
-This is also because VCDM (Verifiable Credential Data Model) 2.0 implementations are not mature enough for interop yet.
+This is also because VCDM (Verifiable Credential Data Model) 2.0 implementations are not mature enough for interop yet. VCDM 2.0 should be a relatively small enhancement for the community when it is eventually finalized.
 <br><br>
 
 ## Issues to consider
 
 - If and how the W3C VC Format attachments for the Issue Credential V2.0 and Present Proof V2 Aries DIDComm Protocols should be used when using AnonCreds W3C VC Format credentials.
-- How AnonCreds W3C VC Format verifiable credentials are stored by the holder such that they will be discoverable when needed for creating verifiable presentations.
+- How AnonCreds W3C VC Format verifiable credentials are stored by the holder such that they will be discoverable when needed for creating verifiable presentations. (Possibly, we generate them just-in-time, eliminating any storage need?)
 - How and when multiple signatures can/should be added to a W3C VC Format credential, enabling both AnonCreds and non-AnonCreds signatures on a single credential and their use in presentations.
   <br><br>
 
@@ -71,10 +71,10 @@ modified instance methods (`_get_entry`, `add_attributes`, `add_predicates`)<br>
 
 ### How will they fit into aca-py?
 
-There are two scenarios to consider when we want to add w3c format support.
+There are two scenarios to consider when we want to add w3c format support to ACA-PY.
 
 - Creating a W3C VC credential from credential definition, and issuing and presenting it as is
-- Converting an already issued legacy anoncreds to W3C format(vice versa) so the converted credential can be issued of presented.
+- Converting an already issued legacy anoncreds to W3C format(vice versa) so the converted credential can be issued or presented.
 
 #### Creating a W3C VC credential from credential definition, and issuing and presenting it as is
 
@@ -108,7 +108,7 @@ async def create_w3c_credential_offer(self, credential_definition_id: str) -> st
 ...
 ```
 
-provided `W3CCredentialOffer` is already imported from `anoncreds` module.<br>
+provided `W3CCredentialOffer` is already imported from `anoncreds` module. (In the W3C VCDM, there is no concept of a credential offer, and most implementations of W3C VCs have no step where a credential is offered before it is issued. This is because, unlike AnonCreds, W3C VCs require no cryptographic commitment from the holder. So an alternative approach to credential offers is to simply not provide them in the W3C case. However, we think that it is simpler to expose the step as part of our support, thus giving the option for the future and making the correspondence between W3C and AnonCreds features more regular.)<br>
 
 In a similar manner, we will proceed through the following processes in comparison with the legacy anoncreds implementations while watching out for signature differences between the two.<br>
 
@@ -222,13 +222,23 @@ legacy_cred = W3CCredential.to_legacy()
 We don't need to input any parameters to it as it in turn calls `Credential.from_w3c()` method under the hood
 
 ### How to handle multiple signatures on a W3C VC Format credential?
+Suggestion from Daniel: Only one of the signature types (CL) is allowed in the AnonCreds format, so if a W3C VC is created by `to_legacy()`, all signature types that can't be turned into a CL signature will be dropped. This would make the conversion lossy. Similarly, an AnonCreds credential carries only the CL signature, limiting output from `to_w3c()` signature types that can be derived from the source CL signature. A possible future enhancement would be to add an extra field to the AnonCreds data structure, in which additional signatures could be stored, even if they are not used. This could eliminate the lossiness, but it adds extra complexity and may not be worth doing.
 
 ### Do any new admin functions need to be built on the control channel?
 
 ### Compatibility with AFJ: how can we make sure that we are compatible?
+Suggestion from Daniel: We will write a test for the Aries Agent Test Framework that issues a W3C VC instead of an AnonCreds credential, and then run that test where one of the agents is ACA-PY and the other is based on AFJ -- and vice versa. Also write a test where a W3C VC is presented after an AnonCreds issuance, and run it with the two roles played by the two different agents. This is a simple approach, but if the tests pass, this should eliminate almost all risk of incompatibility.
 
 ### What is the roadmap for delivery? What will we build first, then second?
+1. Python wrappers around Rust.
+2. W3C VC conversion (`to_w3c()`) in ACA-PY.
+3. W3C VC issuance in ACA-PY.
+4. W3C VC presentation from an AnonCreds cred in ACA-PY.
+5. Convert W3C VCs back to AnonCreds (`to_legacy()`) in ACA-PY.
 
 ### Will we introduce new dependencies, and what is risky or easy?
+Any signfiicant bugs in the Rust implementation may prevent our wrappers from working, which would also prevent progress (or at least confirmed test results) on the higher-level code.
+
+If AFJ lags behind in delivering equivalent functionality, we may not be able to demonstrate compatibility with the test harness.
 
 **TBD**
