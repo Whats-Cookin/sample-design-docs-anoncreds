@@ -19,7 +19,7 @@ For now, we will only target compatibility with [VCDM (Verifiable Credential Dat
 - Presentations: Verify validity of presentations, including non-AnonCreds Data Integrity proof signatures
 - Presentations: Support different formats (for example, DIF) of Presentation Request
 
-This is also because VCDM (Verifiable Credential Data Model) 2.0 implementations are not mature enough for interop yet.
+This may change if the Rust framework decides to support VCDM (Verifiable Credential Data Model) 2.0.
 <br><br>
 
 ## Issues to consider
