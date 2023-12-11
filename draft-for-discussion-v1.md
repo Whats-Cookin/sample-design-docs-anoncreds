@@ -31,7 +31,7 @@ This is also because VCDM (Verifiable Credential Data Model) 2.0 implementations
 
 ## Flow Chart
 
-** Insert Flow Chart **
+![image](https://github.com/Whats-Cookin/sample-design-docs-anoncreds/assets/60510139/b83f2353-604c-4dd6-8c16-ebe08fe77549)
 
 ## Key Questions
 
@@ -82,7 +82,7 @@ added bindings functions (`credential_from_w3c`, `credential_to_w3c`)<br>
 modified instance methods (`_get_entry`, `add_attributes`, `add_predicates`)<br>
 <br>
 
-### How will they fit into aca-py?
+### How will they fit into ACA-PY?
 
 There are two scenarios to consider when we want to add w3c format support to ACA-PY.
 
