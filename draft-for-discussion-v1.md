@@ -12,7 +12,7 @@ Ideally the signatures will be delivered in parallel with the Javascript Framewo
 
 ## Caveats
 
-For now, we will only target compatibility with [VCDM (Verifiable Credential Data Model) 1.1](<(https://www.w3.org/TR/vc-data-model/)>) because the Rust framework we are deriving from is also working with that target. This means we would support the features being implemented in the RUST frameworks, which include:
+For now, we will only target compatibility with [VCDM (Verifiable Credential Data Model) 1.1](https://www.w3.org/TR/vc-data-model/) because the Rust framework we are deriving from is also working with that target. This means we would support the features being implemented in the RUST frameworks, which include:
 
 - Credentials: Verify validity of non-Creds Data Integrity proof signatures
 - Presentations: Create presentations using non-AnonCreds Data Integrity proof signature
