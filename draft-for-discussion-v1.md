@@ -261,8 +261,6 @@ async def store_w3c_credential(...) {
 
 Only one of the signature types (CL) is allowed in the AnonCreds format, so if a W3C VC is created by `to_legacy()`, all signature types that can't be turned into a CL signature will be dropped. This would make the conversion lossy. Similarly, an AnonCreds credential carries only the CL signature, limiting output from `to_w3c()` signature types that can be derived from the source CL signature. A possible future enhancement would be to add an extra field to the AnonCreds data structure, in which additional signatures could be stored, even if they are not used. This could eliminate the lossiness, but it adds extra complexity and may not be worth doing.
 
-### Do any new admin functions need to be built on the control channel?
-
 ### Compatibility with AFJ: how can we make sure that we are compatible?
 
 We will write a test for the Aries Agent Test Framework that issues a W3C VC instead of an AnonCreds credential, and then run that test where one of the agents is ACA-PY and the other is based on AFJ -- and vice versa. Also write a test where a W3C VC is presented after an AnonCreds issuance, and run it with the two roles played by the two different agents. This is a simple approach, but if the tests pass, this should eliminate almost all risk of incompatibility.
