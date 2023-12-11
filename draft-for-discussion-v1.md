@@ -236,7 +236,7 @@ legacy_cred = W3CCredential.to_legacy()
 
 We don't need to input any parameters to it as it in turn calls `Credential.from_w3c()` method under the hood
 
-### How a W3C credential stored is in the wallet.
+### How a W3C credential is stored in the wallet.
 
 Storing a credential in the wallet is somewhat dependent on the kinds of metadata that are relevent.  The metadata mapping between the W3C credential and an anoncreds credential is not fully clear yet.  
 
@@ -272,3 +272,18 @@ We will write a test for the Aries Agent Test Framework that issues a W3C VC ins
 Any signfiicant bugs in the Rust implementation may prevent our wrappers from working, which would also prevent progress (or at least confirmed test results) on the higher-level code.
 
 If AFJ lags behind in delivering equivalent functionality, we may not be able to demonstrate compatibility with the test harness.
+
+### Where should the new issuance code go?
+
+So he [vc](https://github.com/hyperledger/aries-cloudagent-python/tree/main/aries_cloudagent/vc
+) directory contains code to verify vc's, is this a logical place to add the code for issuance?
+
+### What do we call the new things?  Flexcreds?  or just W3C_xxx
+
+Are we defining a concept called Flexcreds that is a credential with a proof array that you can generate more specific or limited credentials from?  If so should this be included in the naming?
+
+### How can a wallet retain the capability to present ONLY an anoncred credential?
+
+If the wallet receives a "Flexcred" credential object with an array of proofs, the wallet may wish to present ONLY the more zero-knowledge anoncreds proof
+
+How will wallets support that in a way that is developer-friendly to wallet devs?
