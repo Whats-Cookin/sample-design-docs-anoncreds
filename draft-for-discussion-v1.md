@@ -238,6 +238,10 @@ We don't need to input any parameters to it as it in turn calls `Credential.from
 
 ### How a W3C credential stored is in the wallet.
 
+Storing a credential in the wallet is somewhat dependent on the kinds of metadata that are relevent.  The metadata mapping between the W3C credential and an anoncreds credential is not fully clear yet.  
+
+One of the questions we need to answer is whether the preferred approach is to modify the existing store credential function so that any credential type is a valid input, or whether there should be a special function just for storing W3C credentials.
+
 We will duplicate this [store_credential](https://github.com/hyperledger/aries-cloudagent-python/blob/8cfe8283ddb2a85e090ea1b8a916df2d78298ec0/aries_cloudagent/anoncreds/holder.py#L167) function and modify it:
 
 ```
